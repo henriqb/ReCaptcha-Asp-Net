@@ -6,6 +6,7 @@ namespace hbehr.recaptcha
     {
         public ReCaptchaError(IEnumerable<string> errorCodes)
         {
+            if (errorCodes == null) { return; }
             foreach (string errorCode in errorCodes)
             {
                 if ("invalid-input-secret".Equals(errorCode))

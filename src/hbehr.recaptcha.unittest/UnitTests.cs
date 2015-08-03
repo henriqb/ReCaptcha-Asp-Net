@@ -70,7 +70,6 @@ namespace hbehr.recaptcha.unittest
             {
                 throw e.InnerException;
             }
-            
         }
 
         [Test]
