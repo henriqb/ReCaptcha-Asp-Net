@@ -11,6 +11,8 @@ PM > Install-Package ReCaptcha-AspNet
 
 ## Configuration 
 
+Get your secret and public keys on https://www.google.com/recaptcha/admin 
+
 Add to you App/Web.config inside <appSettings>
 ```xml
 <add key="recaptcha-secret-key" value="...[secret key]" />
