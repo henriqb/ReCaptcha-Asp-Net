@@ -32,7 +32,7 @@ namespace hbehr.recaptcha.unittest
     [TestFixture]
     public class UnitTests : TimedTests
     {
-        private const string SiteKey = "6LcPoQoTAAAAABDWAO5QneIrEigl9aqFGJ_AUiGV", SecretKey = "6LcPoQoTAAAAAGCwybPpDBHx3-NZ73HafE-shOaw";
+        private const string SiteKey = "6LcPoQoTAAAAAGCwybPpDBHx3-NZ73HafE-shOaw", SecretKey = "6LcPoQoTAAAAABDWAO5QneIrEigl9aqFGJ_AUiGV";
         
         [SetUp]
         public void ResetTest()
@@ -41,7 +41,8 @@ namespace hbehr.recaptcha.unittest
         }
 
         [Test]
-        public void AssertTestWillConectAndFailNoUserAnswer()
+        [ExpectedException(typeof(ReCaptchaException))]
+        public void AssertTestWillConectAndFailInvalidUserAnswer()
         {
             ReCaptcha.Configure(SiteKey, SecretKey);
             bool answer = ReCaptcha.ValidateCaptcha("resposta-fajuta");
@@ -49,18 +50,27 @@ namespace hbehr.recaptcha.unittest
         }
 
         [Test]
-        public void AssertTestWillConectAndFailNoUserAnswerAsync()
+        [ExpectedException(typeof(ReCaptchaException))]
+        public void AssertTestWillConectAndFailInvalidUserAnswerAsync()
         {
-            ReCaptcha.Configure(SiteKey, SecretKey);
-            var task = ReCaptcha.ValidateCaptchaAsync("resposta-fajuta");
-
-            while (task.IsCompleted == false)
+            try
             {
-                Thread.Sleep(1);
-            }
+                ReCaptcha.Configure(SiteKey, SecretKey);
+                var task = ReCaptcha.ValidateCaptchaAsync("resposta-fajuta");
 
-            var answer = task.Result;
-            Assert.IsFalse(answer);
+                while (task.IsCompleted == false)
+                {
+                    Thread.Sleep(1);
+                }
+
+                var answer = task.Result;
+                Assert.IsFalse(answer);
+            }
+            catch (AggregateException e)
+            {
+                throw e.InnerException;
+            }
+            
         }
 
         [Test]
@@ -68,6 +78,14 @@ namespace hbehr.recaptcha.unittest
         public void ExceptionWhenNotConfigured()
         {
             ReCaptcha.GetCaptcha();
+        }
+
+        [Test]
+        [ExpectedException(typeof(ReCaptchaException))]
+        public void InvalidSecretKeyException()
+        {
+            ReCaptcha.Configure("something", "Invalid-Secret-Key");
+            bool answer = ReCaptcha.ValidateCaptcha("resposta-fajuta");
         }
 
         [Test]

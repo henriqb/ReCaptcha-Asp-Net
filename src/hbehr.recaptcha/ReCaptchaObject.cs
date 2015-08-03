@@ -35,13 +35,13 @@ namespace hbehr.recaptcha
         private IHtmlString _captchaDiv;
         private string _secretKey;
         private bool _configured;
-
+        
         internal ReCaptchaObject()
         {
             try
             {
                 var reader = new AppSettingsReader();
-                string secretKey = reader.GetValue("recaptcha-secret-key", typeof (string)).ToString();
+                string secretKey = reader.GetValue("recaptcha-secret-key", typeof(string)).ToString();
                 string publicKey = reader.GetValue("recaptcha-public-key", typeof(string)).ToString();
                 Initialize(publicKey, secretKey);
             }
@@ -88,14 +88,33 @@ namespace hbehr.recaptcha
         {
             CheckIfIamConfigured();
             var answer = webInterface.PostUserAnswer(response, _secretKey);
-            return answer.success;
+            TreatReCaptchaError(answer);
+            return answer.Success;
         }
 
+#if !NET40
         internal async Task<bool> ValidateResponseAsync(IReChaptaWebInterfaceAsync webInterface, string response)
         {
             CheckIfIamConfigured();
             var answer = await webInterface.PostUserAnswerAsync(response, _secretKey);
-            return answer.success;
+            TreatReCaptchaError(answer);
+            return answer.Success;
+        }
+#endif
+
+        private void TreatReCaptchaError(ReCaptchaJsonResponse answer)
+        {
+            var error = new ReCaptchaError(answer.ErrorCodes);
+
+            if (error.InvalidInputSecret)
+            {
+                throw new ReCaptchaException("Invalid ReCaptcha Secret Key !");
+            }
+            if (error.InvalidInputResponse)
+            {
+                throw new ReCaptchaException("Invalid Input Response, make sure you are passing correctly the user answer from the Captcha.");
+            }
+
         }
     }
 }

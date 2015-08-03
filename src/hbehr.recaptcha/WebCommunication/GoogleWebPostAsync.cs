@@ -25,11 +25,12 @@ using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web;
-using System.Web.Helpers;
 using hbehr.recaptcha.WebInterface;
+using Newtonsoft.Json;
 
 namespace hbehr.recaptcha.WebCommunication
 {
+#if !NET40
     internal class GoogleWebPostAsync : GoogleBaseWebPost, IReChaptaWebInterfaceAsync
     {
         public async Task<ReCaptchaJsonResponse> PostUserAnswerAsync(string response, string secretKey)
@@ -54,7 +55,7 @@ namespace hbehr.recaptcha.WebCommunication
         private async Task<ReCaptchaJsonResponse> GetAnswerAsync(WebRequest webRequest)
         {
             var webResponse = webRequest.GetResponseAsync();
-            return Json.Decode<ReCaptchaJsonResponse>(await ReadAnswerFromWebResponseAsync(webResponse));
+            return JsonConvert.DeserializeObject<ReCaptchaJsonResponse>(await ReadAnswerFromWebResponseAsync(webResponse));
         }
 
         private async Task<string> ReadAnswerFromWebResponseAsync(Task<WebResponse> webResponse)
@@ -68,8 +69,10 @@ namespace hbehr.recaptcha.WebCommunication
 
             using (var responseReader = new StreamReader(responseStream))
             {
-                return await responseReader.ReadToEndAsync();
+                string answer = await responseReader.ReadToEndAsync();
+                return answer;
             }
         }
     }
+#endif
 }

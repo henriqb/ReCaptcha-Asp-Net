@@ -24,8 +24,8 @@
 using System.IO;
 using System.Net;
 using System.Web;
-using System.Web.Helpers;
 using hbehr.recaptcha.WebInterface;
+using Newtonsoft.Json;
 
 namespace hbehr.recaptcha.WebCommunication
 {
@@ -53,7 +53,7 @@ namespace hbehr.recaptcha.WebCommunication
         private ReCaptchaJsonResponse GetAnswer(WebRequest webRequest)
         {
             var webResponse = webRequest.GetResponse();
-            return Json.Decode<ReCaptchaJsonResponse>(ReadAnswerFromWebResponse(webResponse));
+            return JsonConvert.DeserializeObject<ReCaptchaJsonResponse>(ReadAnswerFromWebResponse(webResponse));
         }
 
         private string ReadAnswerFromWebResponse(WebResponse webResponse)
@@ -67,7 +67,8 @@ namespace hbehr.recaptcha.WebCommunication
 
             using (var responseReader = new StreamReader(responseStream))
             {
-                return responseReader.ReadToEnd();
+                string answer = responseReader.ReadToEnd();
+                return answer;
             }
         }
     }

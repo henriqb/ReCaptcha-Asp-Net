@@ -21,10 +21,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
+using Newtonsoft.Json;
+
 namespace hbehr.recaptcha
 {
     internal class ReCaptchaJsonResponse
     {
-        internal bool success { get; set; }
+        [JsonProperty("success")]
+        internal bool Success { get; set; }
+        [JsonProperty("error-codes")]
+        internal string[] ErrorCodes { get; set; }
     }
 }

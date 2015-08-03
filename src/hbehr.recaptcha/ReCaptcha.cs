@@ -21,6 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web;
 using hbehr.recaptcha.WebCommunication;
@@ -51,9 +53,11 @@ namespace hbehr.recaptcha
             return _reCaptcha.ValidateResponse(new GoogleWebPost(), response);
         }
 
+#if !NET40
         public static async Task<bool> ValidateCaptchaAsync(string response)
         {
             return await _reCaptcha.ValidateResponseAsync(new GoogleWebPostAsync(), response);
         }
+#endif
     }
 }
