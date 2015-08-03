@@ -114,7 +114,6 @@ namespace hbehr.recaptcha
             {
                 throw new ReCaptchaException("Invalid Input Response, make sure you are passing correctly the user answer from the Captcha.");
             }
-
         }
     }
 }
