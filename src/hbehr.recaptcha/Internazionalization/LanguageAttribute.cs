@@ -1,4 +1,4 @@
-﻿/*
+/*
  * The MIT License (MIT)
  * 
  * Copyright (c) 2015 Henrique B. Behr
@@ -21,41 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-using System.Threading.Tasks;
-using System.Web;
-using hbehr.recaptcha.WebCommunication;
+using System;
 
-namespace hbehr.recaptcha
+namespace hbehr.recaptcha.Internazionalization
 {
-    public static class ReCaptcha
-    {      
-        private static ReCaptchaObject _reCaptcha = new ReCaptchaObject();
+    internal class LanguageAttribute : Attribute
+    {
+        internal string Value { get; private set; }
 
-        public static void Configure(string publicKey, string secretKey, ReCaptchaLanguage? defaultLanguage = null)
+        internal LanguageAttribute(string value)
         {
-            _reCaptcha = new ReCaptchaObject(publicKey, secretKey, defaultLanguage);
+            Value = value;
         }
-
-        public static void ResetConfiguration()
-        {
-            _reCaptcha = new ReCaptchaObject();
-        }
-
-        public static IHtmlString GetCaptcha(ReCaptchaLanguage? language = null)
-        {
-            return _reCaptcha.GetCaptcha(language);
-        }
-
-        public static bool ValidateCaptcha(string response)
-        {
-            return _reCaptcha.ValidateResponse(new GoogleWebPost(), response);
-        }
-
-#if !NET40
-        public static async Task<bool> ValidateCaptchaAsync(string response)
-        {
-            return await _reCaptcha.ValidateResponseAsync(new GoogleWebPostAsync(), response);
-        }
-#endif
     }
 }

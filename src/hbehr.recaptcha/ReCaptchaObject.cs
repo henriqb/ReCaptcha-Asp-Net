@@ -26,24 +26,34 @@ using System.Configuration;
 using System.Threading.Tasks;
 using System.Web;
 using hbehr.recaptcha.Exceptions;
+using hbehr.recaptcha.Internazionalization;
 using hbehr.recaptcha.WebInterface;
 
 namespace hbehr.recaptcha
 {
     internal class ReCaptchaObject
     {
-        private IHtmlString _captchaDiv;
-        private string _secretKey;
+        private string _captchaDiv, _secretKey, _language;
         private bool _configured;
         
         internal ReCaptchaObject()
         {
             try
             {
+                // Auto .config configuration
                 var reader = new AppSettingsReader();
                 string secretKey = reader.GetValue("recaptcha-secret-key", typeof(string)).ToString();
                 string publicKey = reader.GetValue("recaptcha-public-key", typeof(string)).ToString();
+
                 Initialize(publicKey, secretKey);
+                try
+                {
+                    _language = reader.GetValue("recaptcha-language-key", typeof(string)).ToString();
+                }
+                catch
+                {
+                    // No language on .config
+                }
             }
             catch
             {
@@ -51,12 +61,12 @@ namespace hbehr.recaptcha
             }
         }
 
-        internal ReCaptchaObject(string publicKey, string secretKey)
+        internal ReCaptchaObject(string publicKey, string secretKey, ReCaptchaLanguage? defaultLanguage = null)
         {
-            Initialize(publicKey, secretKey);
+            Initialize(publicKey, secretKey, defaultLanguage);
         }
 
-        private void Initialize(string publicKey, string secretKey)
+        private void Initialize(string publicKey, string secretKey, ReCaptchaLanguage? defaultLanguage = null)
         {
             if (string.IsNullOrWhiteSpace(publicKey))
             {
@@ -66,10 +76,20 @@ namespace hbehr.recaptcha
             {
                 throw new ArgumentNullException("secretKey");
             }
+            if (defaultLanguage.HasValue)
+            {
+                _language = defaultLanguage.Value.GetLanguage();
+            }
 
             _configured = true;
             _secretKey = secretKey;
-            _captchaDiv = new HtmlString(string.Format("<div class='g-recaptcha' data-sitekey='{0}'></div><script src='https://www.google.com/recaptcha/api.js'></script>", publicKey));
+            _captchaDiv = string.Format("<div class='g-recaptcha' data-sitekey='{0}'></div><script src='https://www.google.com/recaptcha/api.js{{0}}'></script>", publicKey);
+        }
+
+        private string GetHlCode(ReCaptchaLanguage? language)
+        {
+            string strLang = language.HasValue ? language.Value.GetLanguage() : _language;
+            return string.IsNullOrWhiteSpace(strLang) ? "" : "?hl=" + strLang;
         }
 
         private void CheckIfIamConfigured()
@@ -78,10 +98,10 @@ namespace hbehr.recaptcha
             throw new ReCaptchaException("ReCaptcha is not configured. Get your site and secret keys from google. And call function ReCaptcha.Configure(publicKey, secretKey), or add the keys to the .config file <add key='recaptcha-public-key' value='...' /><add key='recaptcha-site-key' value='...'/>");
         }
 
-        internal IHtmlString GetCaptcha()
+        internal IHtmlString GetCaptcha(ReCaptchaLanguage? language)
         {
             CheckIfIamConfigured();
-            return _captchaDiv;
+            return new HtmlString(string.Format(_captchaDiv, GetHlCode(language)));
         }
 
         internal bool ValidateResponse(IReChaptaWebInterface webInterface, string response)
@@ -102,7 +122,7 @@ namespace hbehr.recaptcha
         }
 #endif
 
-        private void TreatReCaptchaError(ReCaptchaJsonResponse answer)
+        private static void TreatReCaptchaError(ReCaptchaJsonResponse answer)
         {
             var error = new ReCaptchaError(answer.ErrorCodes);
 

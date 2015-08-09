@@ -110,5 +110,22 @@ namespace hbehr.recaptcha.unittest
             Assert.AreEqual("<div class='g-recaptcha' data-sitekey='my-public-key'></div><script src='https://www.google.com/recaptcha/api.js'></script>", captchaString);
         }
 
+        [Test]
+        public void AssertScriptDivIsCorrectWithLanguage()
+        {
+            ReCaptcha.Configure("my-public-key", "my-secret-key", ReCaptchaLanguage.German);
+            IHtmlString captcha = ReCaptcha.GetCaptcha();
+            string captchaString = captcha.ToHtmlString();
+            Assert.AreEqual("<div class='g-recaptcha' data-sitekey='my-public-key'></div><script src='https://www.google.com/recaptcha/api.js?hl=de'></script>", captchaString);
+        }
+
+        [Test]
+        public void AssertScriptDivIsCorrectWithLanguageOverrideConfiguration()
+        {
+            ReCaptcha.Configure("my-public-key", "my-secret-key", ReCaptchaLanguage.EnglishUs);
+            IHtmlString captcha = ReCaptcha.GetCaptcha(ReCaptchaLanguage.PortugueseBrazil);
+            string captchaString = captcha.ToHtmlString();
+            Assert.AreEqual("<div class='g-recaptcha' data-sitekey='my-public-key'></div><script src='https://www.google.com/recaptcha/api.js?hl=pt-BR'></script>", captchaString);
+        }
     }
 }
