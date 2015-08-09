@@ -18,13 +18,23 @@ Add to you App/Web.config inside <appSettings>
 <add key="recaptcha-secret-key" value="...[secret key]" />
 <add key="recaptcha-public-key" value="...[public-key]" />
 ```
+Optional if you want to alter the default language of the Captcha (Get the language code on ReCaptcha site: https://developers.google.com/recaptcha/docs/language)
+```xml
+<add key="recaptcha-language-key" value="[language-code]" />
+```
 
 Or via C# code:
-It's only needed to call it once, a good place to put this is on inside Application_Start() function 
+It's only needed to call it once, a good place to put this is at Application_Start() function 
 ```C#
-string publicKey = "...[public-key]"
-string secretKey = "...[secret-key]"
-ReCaptcha.Configure(publicKey, secretKey)
+string publicKey = "...[public-key]";
+string secretKey = "...[secret-key]";
+ReCaptcha.Configure(publicKey, secretKey);
+
+// Optional, select a default language:
+string publicKey = "...[public-key]";
+string secretKey = "...[secret-key]";
+ReCaptchaLanguage defaultLanguage = ReCaptchaLanguage.German;
+ReCaptcha.Configure(publicKey, secretKey, defaultLanguage);
 ```
 
 ## How to use
@@ -34,7 +44,17 @@ Inside your form
 ```html
 <form action="myAction">
   <input type="text" name="myinput1" />
-  @ReCaptcha.GetCaptcha()
+  @ReCaptcha.GetCaptcha() <!-- Will show your captcha as your configured Language, 
+  if no language is defined it will show ReCaptcha default language (English) -->
+</form>
+```
+
+Optional if you want to override your configured default language: 
+```html
+<form action="myAction">
+  <input type="text" name="myinput1" />
+  @ReCaptcha.GetCaptcha(ReCaptchaLanguage.PortugueseBrazil) <!-- Will show your ReCaptcha as Portuguese, 
+  overriding any previous configuration -->
 </form>
 ```
 
