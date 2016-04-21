@@ -1,7 +1,7 @@
 ﻿/*
  * The MIT License (MIT)
  * 
- * Copyright (c) 2015 Henrique B. Behr
+ * Copyright (c) 2015 - 2016 Henrique B. Behr
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,13 +32,24 @@ namespace hbehr.recaptcha.WebCommunication
 
         protected string GetPostData(string response, string secretKey)
         {
-            if (HttpContext.Current != null)
+            // For testing purpouses, this shouldn't happened
+            if (HttpContext.Current == null) return string.Format("secret={0}&response={1}", secretKey, response);
+
+            string clientIp = GetClientIp();
+            return string.Format("secret={0}&response={1}&remoteip={2}", secretKey, response, clientIp);
+        }
+
+        private string GetClientIp()
+        {
+            // Look for a proxy address first
+            string ip = HttpContext.Current.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
+
+            // If there is no proxy, get the standard remote address
+            if (!string.IsNullOrWhiteSpace(ip) && ip.ToLower() != "unknown")
             {
-                return string.Format("secret={0}&response={1}&remoteip={2}", secretKey, response,
-                    HttpContext.Current.Request.UserHostAddress);
+                return ip;
             }
-            // For testing purpouses
-            return string.Format("secret={0}&response={1}", secretKey, response);
+            return HttpContext.Current.Request.UserHostAddress;
         }
 
         protected WebRequest CreateEmptyPostWebRequest()

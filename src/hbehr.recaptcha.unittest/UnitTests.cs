@@ -1,7 +1,7 @@
 ﻿/*
  * The MIT License (MIT)
  * 
- * Copyright (c) 2015 Henrique B. Behr
+ * Copyright (c) 2015 - 2016 Henrique B. Behr
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -48,7 +48,7 @@ namespace hbehr.recaptcha.unittest
             bool answer = ReCaptcha.ValidateCaptcha("resposta-fajuta");
             Assert.IsFalse(answer);
         }
-
+#if !NET40
         [Test]
         [ExpectedException(typeof(ReCaptchaException))]
         public void AssertTestWillConectAndFailInvalidUserAnswerAsync()
@@ -71,7 +71,7 @@ namespace hbehr.recaptcha.unittest
                 throw e.InnerException;
             }
         }
-
+#endif
         [Test]
         [ExpectedException(typeof(ReCaptchaException))]
         public void ExceptionWhenNotConfigured()
