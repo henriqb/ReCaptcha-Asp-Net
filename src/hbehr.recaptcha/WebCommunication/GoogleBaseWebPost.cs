@@ -52,9 +52,15 @@ namespace hbehr.recaptcha.WebCommunication
             return HttpContext.Current.Request.UserHostAddress;
         }
 
-        protected WebRequest CreateEmptyPostWebRequest()
+        protected WebRequest CreateEmptyPostWebRequest(WebProxy proxy)
         {
             var webRequest = WebRequest.Create(GoogleRecapthcaUrl);
+
+            if (proxy != null)
+            {
+                webRequest.Proxy = proxy;
+            }
+
             webRequest.Method = "POST";
             webRequest.ContentType = "application/x-www-form-urlencoded";
             return webRequest;

@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+using System.Net;
 using System.Threading.Tasks;
 using System.Web;
 using hbehr.recaptcha.WebCommunication;
@@ -28,7 +29,7 @@ using hbehr.recaptcha.WebCommunication;
 namespace hbehr.recaptcha
 {
     public static class ReCaptcha
-    {      
+    {
         private static ReCaptchaObject _reCaptcha = new ReCaptchaObject();
 
         public static void Configure(string publicKey, string secretKey, ReCaptchaLanguage? defaultLanguage = null)
@@ -46,15 +47,15 @@ namespace hbehr.recaptcha
             return _reCaptcha.GetCaptcha(language);
         }
 
-        public static bool ValidateCaptcha(string response)
+        public static bool ValidateCaptcha(string response, WebProxy proxy = null)
         {
-            return _reCaptcha.ValidateResponse(new GoogleWebPost(), response);
+            return _reCaptcha.ValidateResponse(new GoogleWebPost(), response, proxy);
         }
 
 #if !NET40
-        public static async Task<bool> ValidateCaptchaAsync(string response)
+        public static async Task<bool> ValidateCaptchaAsync(string response, WebProxy proxy = null)
         {
-            return await _reCaptcha.ValidateResponseAsync(new GoogleWebPostAsync(), response);
+            return await _reCaptcha.ValidateResponseAsync(new GoogleWebPostAsync(), response, proxy);
         }
 #endif
     }

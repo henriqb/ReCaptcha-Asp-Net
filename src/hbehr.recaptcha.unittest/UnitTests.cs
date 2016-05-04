@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 using System;
+using System.Net;
 using System.Threading;
 using System.Web;
 using hbehr.recaptcha.Exceptions;
@@ -33,6 +34,7 @@ namespace hbehr.recaptcha.unittest
     public class UnitTests : TimedTests
     {
         private const string SiteKey = "6LcPoQoTAAAAAGCwybPpDBHx3-NZ73HafE-shOaw", SecretKey = "6LcPoQoTAAAAABDWAO5QneIrEigl9aqFGJ_AUiGV";
+        private const string TestProxyIp = "186.203.134.5"; private const int PortProxy = 3128;/// Working on 03/05/2016 http://www.freeproxylists.net/186.203.134.5.html
         
         [SetUp]
         public void ResetTest()
@@ -48,6 +50,15 @@ namespace hbehr.recaptcha.unittest
             bool answer = ReCaptcha.ValidateCaptcha("resposta-fajuta");
             Assert.IsFalse(answer);
         }
+
+        [Test]
+        [ExpectedException(typeof(ReCaptchaException))]
+        public void AssertTestWillConectAndFailInvalidUserAnswerWithProxy()
+        {
+            ReCaptcha.Configure(SiteKey, SecretKey);
+            bool answer = ReCaptcha.ValidateCaptcha("resposta-fajuta", new WebProxy(TestProxyIp, PortProxy));
+            Assert.IsFalse(answer);
+        }
 #if !NET40
         [Test]
         [ExpectedException(typeof(ReCaptchaException))]
@@ -57,6 +68,29 @@ namespace hbehr.recaptcha.unittest
             {
                 ReCaptcha.Configure(SiteKey, SecretKey);
                 var task = ReCaptcha.ValidateCaptchaAsync("resposta-fajuta");
+
+                while (task.IsCompleted == false)
+                {
+                    Thread.Sleep(1);
+                }
+
+                var answer = task.Result;
+                Assert.IsFalse(answer);
+            }
+            catch (AggregateException e)
+            {
+                throw e.InnerException;
+            }
+        }
+
+        [Test]
+        [ExpectedException(typeof(ReCaptchaException))]
+        public void AssertTestWillConectAndFailInvalidUserAnswerAsyncWithProxy()
+        {
+            try
+            {
+                ReCaptcha.Configure(SiteKey, SecretKey);
+                var task = ReCaptcha.ValidateCaptchaAsync("resposta-fajuta", new WebProxy(TestProxyIp, PortProxy));
 
                 while (task.IsCompleted == false)
                 {

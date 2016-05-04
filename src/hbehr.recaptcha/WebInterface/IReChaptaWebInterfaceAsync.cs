@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+using System.Net;
 using System.Threading.Tasks;
 
 namespace hbehr.recaptcha.WebInterface
@@ -28,5 +29,6 @@ namespace hbehr.recaptcha.WebInterface
     internal interface IReChaptaWebInterfaceAsync
     {
         Task<ReCaptchaJsonResponse> PostUserAnswerAsync(string response, string secretKey);
+        Task<ReCaptchaJsonResponse> PostUserAnswerAsync(string response, string secretKey, WebProxy proxy);
     }
 }

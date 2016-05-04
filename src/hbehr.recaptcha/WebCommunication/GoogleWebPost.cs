@@ -33,14 +33,19 @@ namespace hbehr.recaptcha.WebCommunication
     {
         public ReCaptchaJsonResponse PostUserAnswer(string response, string secretKey)
         {
+            return PostUserAnswer(response, secretKey, null);
+        }
+
+        public ReCaptchaJsonResponse PostUserAnswer(string response, string secretKey, WebProxy proxy)
+        {
             string postData = GetPostData(response, secretKey);
-            var webRequest = CreatePostWebRequest(postData);
+            var webRequest = CreatePostWebRequest(postData, proxy);
             return GetAnswer(webRequest);
         }
 
-        private WebRequest CreatePostWebRequest(string postData)
+        private WebRequest CreatePostWebRequest(string postData, WebProxy proxy)
         {
-            var webRequest = CreateEmptyPostWebRequest();
+            var webRequest = CreateEmptyPostWebRequest(proxy);
             webRequest.ContentLength = postData.Length;
 
             using (var requestWriter = new StreamWriter(webRequest.GetRequestStream()))

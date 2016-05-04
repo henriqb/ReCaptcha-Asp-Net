@@ -23,6 +23,7 @@
  */
 using System;
 using System.Configuration;
+using System.Net;
 using System.Threading.Tasks;
 using System.Web;
 using hbehr.recaptcha.Exceptions;
@@ -38,26 +39,26 @@ namespace hbehr.recaptcha
         
         internal ReCaptchaObject()
         {
+            // Auto .config configuration
+            var reader = new AppSettingsReader();
             try
             {
-                // Auto .config configuration
-                var reader = new AppSettingsReader();
                 string secretKey = reader.GetValue("recaptcha-secret-key", typeof(string)).ToString();
                 string publicKey = reader.GetValue("recaptcha-public-key", typeof(string)).ToString();
 
                 Initialize(publicKey, secretKey);
-                try
-                {
-                    _language = reader.GetValue("recaptcha-language-key", typeof(string)).ToString();
-                }
-                catch
-                {
-                    // No language on .config
-                }
             }
             catch
             {
                 // No configuration on .config
+            }
+            try
+            {
+                _language = reader.GetValue("recaptcha-language-key", typeof(string)).ToString();
+            }
+            catch
+            {
+                // No language on .config
             }
         }
 
@@ -80,7 +81,6 @@ namespace hbehr.recaptcha
             {
                 _language = defaultLanguage.Value.GetLanguage();
             }
-
             _configured = true;
             _secretKey = secretKey;
             _captchaDiv = string.Format("<div class='g-recaptcha' data-sitekey='{0}'></div><script src='https://www.google.com/recaptcha/api.js{{0}}'></script>", publicKey);
@@ -112,11 +112,27 @@ namespace hbehr.recaptcha
             return answer.Success;
         }
 
+        internal bool ValidateResponse(IReChaptaWebInterface webInterface, string response, WebProxy proxy)
+        {
+            CheckIfIamConfigured();
+            var answer = webInterface.PostUserAnswer(response, _secretKey, proxy);
+            TreatReCaptchaError(answer);
+            return answer.Success;
+        }
+
 #if !NET40
         internal async Task<bool> ValidateResponseAsync(IReChaptaWebInterfaceAsync webInterface, string response)
         {
             CheckIfIamConfigured();
             var answer = await webInterface.PostUserAnswerAsync(response, _secretKey);
+            TreatReCaptchaError(answer);
+            return answer.Success;
+        }
+
+        internal async Task<bool> ValidateResponseAsync(IReChaptaWebInterfaceAsync webInterface, string response, WebProxy proxy)
+        {
+            CheckIfIamConfigured();
+            var answer = await webInterface.PostUserAnswerAsync(response, _secretKey, proxy);
             TreatReCaptchaError(answer);
             return answer.Success;
         }

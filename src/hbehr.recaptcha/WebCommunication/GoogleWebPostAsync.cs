@@ -35,14 +35,19 @@ namespace hbehr.recaptcha.WebCommunication
     {
         public async Task<ReCaptchaJsonResponse> PostUserAnswerAsync(string response, string secretKey)
         {
+            return await PostUserAnswerAsync(response, secretKey, null);
+        }
+
+        public async Task<ReCaptchaJsonResponse> PostUserAnswerAsync(string response, string secretKey, WebProxy proxy)
+        {
             string postData = GetPostData(response, secretKey);
-            var webRequest = CreatePostWebRequestAsync(postData);
+            var webRequest = CreatePostWebRequestAsync(postData, proxy);
             return await GetAnswerAsync(await webRequest);
         }
 
-        private async Task<WebRequest> CreatePostWebRequestAsync(string postData)
+        private async Task<WebRequest> CreatePostWebRequestAsync(string postData, WebProxy proxy)
         {
-            var webRequest = CreateEmptyPostWebRequest();
+            var webRequest = CreateEmptyPostWebRequest(proxy);
             webRequest.ContentLength = postData.Length;
 
             using (var requestWriter = new StreamWriter(webRequest.GetRequestStream()))

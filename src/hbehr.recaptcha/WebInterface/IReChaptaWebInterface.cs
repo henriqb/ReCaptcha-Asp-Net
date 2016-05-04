@@ -21,10 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+using System.Net;
+
 namespace hbehr.recaptcha.WebInterface
 {
     internal interface IReChaptaWebInterface
     {
         ReCaptchaJsonResponse PostUserAnswer(string response, string secretKey);
+        ReCaptchaJsonResponse PostUserAnswer(string response, string secretKey, WebProxy proxy);
     }
 }
