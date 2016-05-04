@@ -73,6 +73,17 @@ if (validCaptcha){
 }
 ```
 
+#### Optional: Proxy
+You may use a Proxy to send user Response to ReCaptcha Server
+```C#
+...
+const string proxyIp = "xxx.xxx.xxx.xxx";
+const int proxyPort = 1234;
+WebProxy webProxy = new WebProxy(proxyIp, proxyPort); 
+bool validCaptcha = ReCaptcha.ValidateCaptcha(userResponse, webProxy);
+...
+``` 
+
 May throws the following exception, if the secret key is invalid, or you pass a invalid user response as the ValidateCaptcha parameter:
 ```C#
 throw new ReCaptchaException();
