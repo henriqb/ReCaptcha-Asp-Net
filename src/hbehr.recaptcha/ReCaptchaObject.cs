@@ -1,7 +1,7 @@
 ﻿/*
  * The MIT License (MIT)
  * 
- * Copyright (c) 2015 - 2016 Henrique B. Behr
+ * Copyright (c) 2015 - 2017 Henrique B. Behr
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,14 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+using hbehr.recaptcha.Exceptions;
+using hbehr.recaptcha.Internazionalization;
+using hbehr.recaptcha.WebInterface;
 using System;
 using System.Configuration;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web;
-using hbehr.recaptcha.Exceptions;
-using hbehr.recaptcha.Internazionalization;
-using hbehr.recaptcha.WebInterface;
 
 namespace hbehr.recaptcha
 {
@@ -120,7 +120,6 @@ namespace hbehr.recaptcha
             return answer.Success;
         }
 
-#if !NET40
         internal async Task<bool> ValidateResponseAsync(IReChaptaWebInterfaceAsync webInterface, string response)
         {
             CheckIfIamConfigured();
@@ -136,7 +135,6 @@ namespace hbehr.recaptcha
             TreatReCaptchaError(answer);
             return answer.Success;
         }
-#endif
 
         private static void TreatReCaptchaError(ReCaptchaJsonResponse answer)
         {

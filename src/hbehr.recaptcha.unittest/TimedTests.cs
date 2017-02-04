@@ -1,7 +1,7 @@
 ﻿/*
  * The MIT License (MIT)
  * 
- * Copyright (c) 2015 - 2016 Henrique B. Behr
+ * Copyright (c) 2015 - 2017 Henrique B. Behr
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,9 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+using NUnit.Framework;
 using System;
 using System.Diagnostics;
-using NUnit.Framework;
 
 namespace hbehr.recaptcha.unittest
 {
