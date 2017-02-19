@@ -3,7 +3,7 @@ Google ReCaptcha for Asp Net, simplified
 
 ## Instalation
 Nuget Url:
-https://www.nuget.org/packages/ReCaptcha-AspNet/1.0.0
+https://www.nuget.org/packages/ReCaptcha-AspNet
 
 ```
 PM > Install-Package ReCaptcha-AspNet
