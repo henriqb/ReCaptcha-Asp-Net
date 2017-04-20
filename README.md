@@ -39,8 +39,8 @@ ReCaptcha.Configure(publicKey, secretKey, defaultLanguage);
 
 ## How to use
 
-### Client Side:
-Inside your form
+### Client Side (v2):
+Inside your form 
 ```html
 <form action="myAction">
   <input type="text" name="myinput1" />
@@ -55,6 +55,25 @@ Optional if you want to override your configured default language:
   <input type="text" name="myinput1" />
   @ReCaptcha.GetCaptcha(ReCaptchaLanguage.PortugueseBrazil) <!-- Will show your ReCaptcha as Portuguese, 
   overriding any previous configuration -->
+</form>
+```
+
+### Client Side (Invisible):
+Inside your form 
+```html
+<script type="text/javascript">function submit() { $('form').submit(); }</script>
+<form action="myAction">
+  <input type="text" name="myinput1" />
+  @ReCaptcha.GetInvisibleCaptcha("submit", "Save") <!-- Will show a button, with a Label Save and  call function "submit();" after user click ok and pass Captcha -->
+</form>
+```
+
+Optional if you want to override your configured default language: 
+```html
+<script type="text/javascript">function submit() { $('form').submit(); }</script>
+<form action="myAction">
+  <input type="text" name="myinput1" />
+  @ReCaptcha.GetInvisibleCaptcha("submit", "Save", ReCaptchaLanguage.PortugueseBrazil) <!-- Will show your Invisible ReCaptcha as Portuguese, overriding any previous configuration -->
 </form>
 ```
 
