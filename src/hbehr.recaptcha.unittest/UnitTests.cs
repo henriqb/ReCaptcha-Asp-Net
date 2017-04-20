@@ -160,5 +160,14 @@ namespace hbehr.recaptcha.unittest
             string captchaString = captcha.ToHtmlString();
             Assert.AreEqual("<div class='g-recaptcha' data-sitekey='my-public-key'></div><script src='https://www.google.com/recaptcha/api.js?hl=pt-BR'></script>", captchaString);
         }
+
+        [Test]
+        public void AssertScriptInvisibleDivIsCorrectWithLanguageOverrideConfiguration()
+        {
+            ReCaptcha.Configure("my-public-key", "my-secret-key", ReCaptchaLanguage.EnglishUs);
+            IHtmlString captcha = ReCaptcha.GetInvisibleCaptcha("callback", "SUBMIT",ReCaptchaLanguage.PortugueseBrazil);
+            string captchaString = captcha.ToHtmlString();
+            Assert.AreEqual("<button class='g-recaptcha' data-sitekey='my-public-key' data-callback='callback'>SUBMIT</button><script src='https://www.google.com/recaptcha/api.js?hl=pt-BR'></script>", captchaString);
+        }
     }
 }
