@@ -21,6 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+using System;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 
@@ -30,8 +32,33 @@ namespace hbehr.recaptcha.Internazionalization
     {
         public static string GetLanguage(this ReCaptchaLanguage language)
         {
+            if (language == ReCaptchaLanguage.Auto)
+            {
+                var newLanguage = GetLanguageByCulture(CultureInfo.CurrentUICulture);
+                return GetLanguage(newLanguage.GetValueOrDefault());
+            }
             var attribute = language.GetType().GetMember(language.ToString()).Select(m => m.GetCustomAttribute<LanguageAttribute>()).FirstOrDefault() ?? new LanguageAttribute(string.Empty);
             return attribute.Value;
+        }
+
+        public static ReCaptchaLanguage? GetLanguageByCulture(string culture)
+        {                       
+            var member = typeof(ReCaptchaLanguage).GetMembers()
+                .Where(m => m.GetCustomAttribute<LanguageAttribute>() != null && m.GetCustomAttribute<LanguageAttribute>().Value.Equals(culture, StringComparison.OrdinalIgnoreCase))
+                .FirstOrDefault();            
+            return ConvertLangType(member);
+        }
+
+        public static ReCaptchaLanguage? GetLanguageByCulture(CultureInfo culture)
+        {
+            return GetLanguageByCulture((culture.Parent != CultureInfo.InvariantCulture ? culture.Parent : culture).ToString());
+        }
+
+        private static ReCaptchaLanguage? ConvertLangType(MemberInfo memberInfo)
+        {
+            return memberInfo != null ?        
+                (ReCaptchaLanguage?)((FieldInfo)memberInfo).GetValue(memberInfo.Name)
+                : null;
         }
 
         private static T GetCustomAttribute<T>(this MemberInfo type)

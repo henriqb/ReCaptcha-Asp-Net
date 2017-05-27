@@ -24,6 +24,7 @@
 using hbehr.recaptcha.Exceptions;
 using NUnit.Framework;
 using System;
+using System.Globalization;
 using System.Net;
 using System.Threading;
 using System.Web;
@@ -34,7 +35,7 @@ namespace hbehr.recaptcha.unittest
     public class UnitTests : TimedTests
     {
         private const string SiteKey = "6LcPoQoTAAAAAGCwybPpDBHx3-NZ73HafE-shOaw", SecretKey = "6LcPoQoTAAAAABDWAO5QneIrEigl9aqFGJ_AUiGV";
-        private const string TestProxyIp = "185.46.151.26"; private const int PortProxy = 8080;/// Working on 04/02/2016 http://www.freeproxylists.net/185.46.151.26.html
+        private const string TestProxyIp = "177.55.254.113"; private const int PortProxy = 8080;/// Working on 27/05/2017 http://www.freeproxylists.net/121.8.98.201.html
 
         [SetUp]
         public void ResetTest()
@@ -153,6 +154,26 @@ namespace hbehr.recaptcha.unittest
         }
 
         [Test]
+        public void AssertScriptDivIsCorrectWithAutoLanguage()
+        {
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo("no");
+            ReCaptcha.Configure("my-public-key", "my-secret-key", ReCaptchaLanguage.Auto);
+
+            IHtmlString captcha = ReCaptcha.GetCaptcha();
+            string captchaString = captcha.ToHtmlString();
+            Assert.AreEqual("<div class='g-recaptcha' data-sitekey='my-public-key'></div><script src='https://www.google.com/recaptcha/api.js?hl=no'></script>", captchaString);
+            
+            captcha = ReCaptcha.GetCaptcha(ReCaptchaLanguage.PortugueseBrazil);
+            captchaString = captcha.ToHtmlString();
+            Assert.AreEqual("<div class='g-recaptcha' data-sitekey='my-public-key'></div><script src='https://www.google.com/recaptcha/api.js?hl=pt-BR'></script>", captchaString);
+
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo("nl");
+            captcha = ReCaptcha.GetCaptcha();
+            captchaString = captcha.ToHtmlString();
+            Assert.AreEqual("<div class='g-recaptcha' data-sitekey='my-public-key'></div><script src='https://www.google.com/recaptcha/api.js?hl=nl'></script>", captchaString);
+        }
+
+        [Test]
         public void AssertScriptDivIsCorrectWithLanguageOverrideConfiguration()
         {
             ReCaptcha.Configure("my-public-key", "my-secret-key", ReCaptchaLanguage.EnglishUs);
@@ -165,7 +186,7 @@ namespace hbehr.recaptcha.unittest
         public void AssertScriptInvisibleDivIsCorrectWithLanguageOverrideConfiguration()
         {
             ReCaptcha.Configure("my-public-key", "my-secret-key", ReCaptchaLanguage.EnglishUs);
-            IHtmlString captcha = ReCaptcha.GetInvisibleCaptcha("callback", "SUBMIT",ReCaptchaLanguage.PortugueseBrazil);
+            IHtmlString captcha = ReCaptcha.GetInvisibleCaptcha("callback", "SUBMIT", ReCaptchaLanguage.PortugueseBrazil);
             string captchaString = captcha.ToHtmlString();
             Assert.AreEqual("<button class='g-recaptcha' data-sitekey='my-public-key' data-callback='callback'>SUBMIT</button><script src='https://www.google.com/recaptcha/api.js?hl=pt-BR'></script>", captchaString);
         }

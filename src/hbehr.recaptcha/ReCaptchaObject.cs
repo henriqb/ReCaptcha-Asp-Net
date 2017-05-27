@@ -35,6 +35,7 @@ namespace hbehr.recaptcha
     internal class ReCaptchaObject
     {
         private string _captchaDiv, _invisibleCaptchaDiv, _secretKey, _language;
+        private ReCaptchaLanguage? _defaultLanguage;
         private bool _configured;
         
         internal ReCaptchaObject()
@@ -55,6 +56,10 @@ namespace hbehr.recaptcha
             try
             {
                 _language = reader.GetValue("recaptcha-language-key", typeof(string)).ToString();
+                if ("AUTO".Equals(_language, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    _defaultLanguage = ReCaptchaLanguage.Auto;
+                }
             }
             catch
             {
@@ -77,6 +82,7 @@ namespace hbehr.recaptcha
             {
                 throw new ArgumentNullException("secretKey");
             }
+            _defaultLanguage = defaultLanguage;
             if (defaultLanguage.HasValue)
             {
                 _language = defaultLanguage.Value.GetLanguage();
@@ -89,7 +95,8 @@ namespace hbehr.recaptcha
 
         private string GetHlCode(ReCaptchaLanguage? language)
         {
-            string strLang = language.HasValue ? language.Value.GetLanguage() : _language;
+            string strLang = language.HasValue ? language.Value.GetLanguage() : (_defaultLanguage == ReCaptchaLanguage.Auto ? 
+                _defaultLanguage.Value.GetLanguage() : _language);
             return string.IsNullOrWhiteSpace(strLang) ? "" : "?hl=" + strLang;
         }
 
