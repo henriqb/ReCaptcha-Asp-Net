@@ -19,6 +19,7 @@ Add to you App/Web.config inside <appSettings>
 <add key="recaptcha-public-key" value="...[public-key]" />
 ```
 Optional if you want to alter the default language of the Captcha (Get the language code on ReCaptcha site: https://developers.google.com/recaptcha/docs/language)
+Or you can use value "Auto" and it will get the Language from System.Thread.CurrentCulture
 ```xml
 <add key="recaptcha-language-key" value="[language-code]" />
 ```
@@ -31,9 +32,11 @@ string secretKey = "...[secret-key]";
 ReCaptcha.Configure(publicKey, secretKey);
 
 // Optional, select a default language:
-string publicKey = "...[public-key]";
-string secretKey = "...[secret-key]";
 ReCaptchaLanguage defaultLanguage = ReCaptchaLanguage.German;
+ReCaptcha.Configure(publicKey, secretKey, defaultLanguage);
+
+//Auto-select language from System.Thread.CurrentCulture
+ReCaptchaLanguage defaultLanguage = ReCaptchaLanguage.Auto;
 ReCaptcha.Configure(publicKey, secretKey, defaultLanguage);
 ```
 
