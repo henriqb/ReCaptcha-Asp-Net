@@ -21,6 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
+using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web;
@@ -47,9 +49,9 @@ namespace hbehr.recaptcha
             return _reCaptcha.GetCaptcha(language);
         }
 
-        public static IHtmlString GetInvisibleCaptcha(string callback, string buttonText, ReCaptchaLanguage? language = null)
+        public static IHtmlString GetInvisibleCaptcha(string callback, string buttonText, ReCaptchaLanguage? language = null, IEnumerable<string> additionalClasses = null)
         {
-            return _reCaptcha.GetInvisibleCaptcha(callback, buttonText, language);
+            return _reCaptcha.GetInvisibleCaptcha(callback, buttonText, language, additionalClasses);
         }
 
         public static bool ValidateCaptcha(string response, WebProxy proxy = null)

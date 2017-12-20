@@ -25,7 +25,9 @@ using hbehr.recaptcha.Exceptions;
 using hbehr.recaptcha.Internazionalization;
 using hbehr.recaptcha.WebInterface;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web;
@@ -90,7 +92,7 @@ namespace hbehr.recaptcha
             _configured = true;
             _secretKey = secretKey;
             _captchaDiv = string.Format("<div class='g-recaptcha' data-sitekey='{0}'></div><script src='https://www.google.com/recaptcha/api.js{{0}}'></script>", publicKey);
-            _invisibleCaptchaDiv = string.Format("<button class='g-recaptcha' data-sitekey='{0}' data-callback='{{1}}'>{{2}}</button><script src='https://www.google.com/recaptcha/api.js{{0}}'></script>", publicKey);
+            _invisibleCaptchaDiv = string.Format("<button class='{{1}}' data-sitekey='{0}' data-callback='{{2}}'>{{3}}</button><script src='https://www.google.com/recaptcha/api.js{{0}}'></script>", publicKey);
         }
 
         private string GetHlCode(ReCaptchaLanguage? language)
@@ -112,10 +114,15 @@ namespace hbehr.recaptcha
             return new HtmlString(string.Format(_captchaDiv, GetHlCode(language)));
         }
 
-        internal IHtmlString GetInvisibleCaptcha(string callback, string buttonText, ReCaptchaLanguage? language)
+        internal IHtmlString GetInvisibleCaptcha(string callback, string buttonText, ReCaptchaLanguage? language, IEnumerable<string> additionalClasses)
         {
             CheckIfIamConfigured();
-            return new HtmlString(string.Format(_invisibleCaptchaDiv, GetHlCode(language), callback, buttonText));
+            var classes = new List<string> {"g-recaptcha"};
+            if (additionalClasses != null)
+            {
+              classes.AddRange(additionalClasses);
+            }
+            return new HtmlString(string.Format(_invisibleCaptchaDiv, GetHlCode(language), string.Join(" ", classes), callback, buttonText));
         }
 
         internal bool ValidateResponse(IReChaptaWebInterface webInterface, string response)
