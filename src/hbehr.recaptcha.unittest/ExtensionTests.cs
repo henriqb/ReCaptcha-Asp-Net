@@ -16,6 +16,17 @@ namespace hbehr.recaptcha.unittest
 
 				ReCaptchaLanguage.Auto.GetLanguage();
 			});
+		}	
+		
+		[Test]
+		public void NoExceptionWhenNorwegianBokmal()
+		{
+			Assert.DoesNotThrow(() =>
+			{
+				CultureInfo.CurrentUICulture = new CultureInfo("nb-NO");
+
+				ReCaptchaLanguage.Auto.GetLanguage();
+			});
 		}
 	}
 }
