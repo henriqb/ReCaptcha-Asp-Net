@@ -42,7 +42,9 @@ namespace hbehr.recaptcha.Internazionalization
         }
 
         public static ReCaptchaLanguage? GetLanguageByCulture(string culture)
-        {                       
+        {
+            if ("he".Equals(culture)) { culture = "iw"; } // Issue #10, C# Hebrew code = 'he', and ReCaptcha Hebrew Code = 'iw'
+
             var member = typeof(ReCaptchaLanguage).GetMembers()
                 .Where(m => m.GetCustomAttribute<LanguageAttribute>() != null && m.GetCustomAttribute<LanguageAttribute>().Value.Equals(culture, StringComparison.OrdinalIgnoreCase))
                 .FirstOrDefault();            
