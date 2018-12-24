@@ -51,7 +51,23 @@ namespace hbehr.recaptcha.Internazionalization
 
         public static ReCaptchaLanguage? GetLanguageByCulture(CultureInfo culture)
         {
-            return GetLanguageByCulture((culture.Parent != CultureInfo.InvariantCulture ? culture.Parent : culture).ToString());
+            var language = GetLanguageByCulture(culture.ToString());
+
+            if (language.HasValue)
+                return language;
+
+            var parentCulture = culture.Parent;
+            while (parentCulture != CultureInfo.InvariantCulture)
+            {
+                language = GetLanguageByCulture(parentCulture.ToString());
+
+                if (language.HasValue)
+                    return language;
+
+                parentCulture = parentCulture.Parent;
+            }
+            
+            return ReCaptchaLanguage.EnglishUs;
         }
 
         private static ReCaptchaLanguage? ConvertLangType(MemberInfo memberInfo)
