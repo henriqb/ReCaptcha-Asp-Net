@@ -91,7 +91,7 @@ namespace hbehr.recaptcha
             }
             _configured = true;
             _secretKey = secretKey;
-            _captchaDiv = string.Format("<div class='g-recaptcha' data-sitekey='{0}'></div><script src='https://www.google.com/recaptcha/api.js{{0}}'></script>", publicKey);
+            _captchaDiv = string.Format("<div class='g-recaptcha' data-sitekey='{0}'{{1}}></div><script src='https://www.google.com/recaptcha/api.js{{0}}'></script>", publicKey);
             _invisibleCaptchaDiv = string.Format("<button class='{{1}}' data-sitekey='{0}' data-callback='{{2}}'>{{3}}</button><script src='https://www.google.com/recaptcha/api.js{{0}}'></script>", publicKey);
         }
 
@@ -108,10 +108,10 @@ namespace hbehr.recaptcha
             throw new ReCaptchaException("ReCaptcha is not configured. Get your site and secret keys from google. And call function ReCaptcha.Configure(publicKey, secretKey), or add the keys to the .config file <add key='recaptcha-public-key' value='...' /><add key='recaptcha-site-key' value='...'/>");
         }
 
-        internal IHtmlString GetCaptcha(ReCaptchaLanguage? language)
+        internal IHtmlString GetCaptcha(ReCaptchaLanguage? language, string callback, string expiredCallback, string errorCallback)
         {
             CheckIfIamConfigured();
-            return new HtmlString(string.Format(_captchaDiv, GetHlCode(language)));
+            return new HtmlString(string.Format(_captchaDiv, GetHlCode(language), GetCaptchaDataCallbacks(callback, expiredCallback, errorCallback)));
         }
 
         internal IHtmlString GetInvisibleCaptcha(string callback, string buttonText, ReCaptchaLanguage? language, IEnumerable<string> additionalClasses)
@@ -155,6 +155,22 @@ namespace hbehr.recaptcha
             var answer = await webInterface.PostUserAnswerAsync(response, _secretKey, proxy);
             TreatReCaptchaError(answer);
             return answer.Success;
+        }
+
+        private static string GetCaptchaDataCallbacks(string callback, string expiredCallback, string errorCallback)
+        {
+            var dataCallbacks = new List<string>();
+
+            if (!string.IsNullOrWhiteSpace(callback))
+                dataCallbacks.Add($"data-callback='{callback}'");
+
+            if (!string.IsNullOrWhiteSpace(expiredCallback))
+                dataCallbacks.Add($"data-expired-callback='{expiredCallback}'");
+
+            if (!string.IsNullOrWhiteSpace(errorCallback))
+                dataCallbacks.Add($"data-error-callback='{errorCallback}'");
+
+            return dataCallbacks.Any() ? $" {string.Join(" ", dataCallbacks)}" : string.Empty;
         }
 
         private static void TreatReCaptchaError(ReCaptchaJsonResponse answer)

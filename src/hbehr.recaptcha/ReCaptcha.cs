@@ -44,9 +44,9 @@ namespace hbehr.recaptcha
             _reCaptcha = new ReCaptchaObject();
         }
 
-        public static IHtmlString GetCaptcha(ReCaptchaLanguage? language = null)
+        public static IHtmlString GetCaptcha(ReCaptchaLanguage? language = null, string callback = null, string expiredCallback = null, string errorCallback = null)
         {
-            return _reCaptcha.GetCaptcha(language);
+            return _reCaptcha.GetCaptcha(language, callback, expiredCallback, errorCallback);
         }
 
         public static IHtmlString GetInvisibleCaptcha(string callback, string buttonText, ReCaptchaLanguage? language = null, IEnumerable<string> additionalClasses = null)
