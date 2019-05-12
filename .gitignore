@@ -233,3 +233,4 @@ $RECYCLE.BIN/
 /src/.vs/hbehr.recaptcha/v15/Server/sqlite3/storage.ide-shm
 /src/.vs/hbehr.recaptcha/v15/Server/sqlite3/storage.ide
 /src/.vs/hbehr.recaptcha/v15/Server/sqlite3/db.lock
+/.vs
