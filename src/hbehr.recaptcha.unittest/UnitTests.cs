@@ -141,7 +141,7 @@ namespace hbehr.recaptcha.unittest
             ReCaptcha.Configure("my-public-key", "my-secret-key");
             IHtmlString captcha = ReCaptcha.GetCaptcha();
             string captchaString = captcha.ToHtmlString();
-            Assert.AreEqual("<div class='g-recaptcha' data-sitekey='my-public-key'></div><script src='https://www.google.com/recaptcha/api.js'></script>", captchaString);
+            Assert.AreEqual("<div class='g-recaptcha' data-sitekey='my-public-key' data-theme='light'></div><script src='https://www.google.com/recaptcha/api.js'></script>", captchaString);
         }
 
         [Test]
@@ -150,7 +150,7 @@ namespace hbehr.recaptcha.unittest
             ReCaptcha.Configure("my-public-key", "my-secret-key", ReCaptchaLanguage.German);
             IHtmlString captcha = ReCaptcha.GetCaptcha();
             string captchaString = captcha.ToHtmlString();
-            Assert.AreEqual("<div class='g-recaptcha' data-sitekey='my-public-key'></div><script src='https://www.google.com/recaptcha/api.js?hl=de'></script>", captchaString);
+            Assert.AreEqual("<div class='g-recaptcha' data-sitekey='my-public-key' data-theme='light'></div><script src='https://www.google.com/recaptcha/api.js?hl=de'></script>", captchaString);
         }
 
         [Test]
@@ -161,16 +161,16 @@ namespace hbehr.recaptcha.unittest
 
             IHtmlString captcha = ReCaptcha.GetCaptcha();
             string captchaString = captcha.ToHtmlString();
-            Assert.AreEqual("<div class='g-recaptcha' data-sitekey='my-public-key'></div><script src='https://www.google.com/recaptcha/api.js?hl=no'></script>", captchaString);
+            Assert.AreEqual("<div class='g-recaptcha' data-sitekey='my-public-key' data-theme='light'></div><script src='https://www.google.com/recaptcha/api.js?hl=no'></script>", captchaString);
 
             captcha = ReCaptcha.GetCaptcha(ReCaptchaLanguage.PortugueseBrazil);
             captchaString = captcha.ToHtmlString();
-            Assert.AreEqual("<div class='g-recaptcha' data-sitekey='my-public-key'></div><script src='https://www.google.com/recaptcha/api.js?hl=pt-BR'></script>", captchaString);
+            Assert.AreEqual("<div class='g-recaptcha' data-sitekey='my-public-key' data-theme='light'></div><script src='https://www.google.com/recaptcha/api.js?hl=pt-BR'></script>", captchaString);
 
             Thread.CurrentThread.CurrentUICulture = new CultureInfo("nl");
             captcha = ReCaptcha.GetCaptcha();
             captchaString = captcha.ToHtmlString();
-            Assert.AreEqual("<div class='g-recaptcha' data-sitekey='my-public-key'></div><script src='https://www.google.com/recaptcha/api.js?hl=nl'></script>", captchaString);
+            Assert.AreEqual("<div class='g-recaptcha' data-sitekey='my-public-key' data-theme='light'></div><script src='https://www.google.com/recaptcha/api.js?hl=nl'></script>", captchaString);
         }
 
         [Test]
@@ -179,7 +179,7 @@ namespace hbehr.recaptcha.unittest
             ReCaptcha.Configure("my-public-key", "my-secret-key", ReCaptchaLanguage.EnglishUs);
             IHtmlString captcha = ReCaptcha.GetCaptcha(ReCaptchaLanguage.PortugueseBrazil);
             string captchaString = captcha.ToHtmlString();
-            Assert.AreEqual("<div class='g-recaptcha' data-sitekey='my-public-key'></div><script src='https://www.google.com/recaptcha/api.js?hl=pt-BR'></script>", captchaString);
+            Assert.AreEqual("<div class='g-recaptcha' data-sitekey='my-public-key' data-theme='light'></div><script src='https://www.google.com/recaptcha/api.js?hl=pt-BR'></script>", captchaString);
         }
 
         [Test]
@@ -187,33 +187,52 @@ namespace hbehr.recaptcha.unittest
         {
             ReCaptcha.Configure("my-public-key", "my-secret-key");
             IHtmlString captcha1 = ReCaptcha.GetCaptcha(callback: "callback", expiredCallback: "expiredCallback", errorCallback: "errorCallback");
-            Assert.AreEqual("<div class='g-recaptcha' data-sitekey='my-public-key' data-callback='callback' data-expired-callback='expiredCallback' data-error-callback='errorCallback'></div><script src='https://www.google.com/recaptcha/api.js'></script>", captcha1.ToHtmlString());
+            Assert.AreEqual("<div class='g-recaptcha' data-sitekey='my-public-key' data-callback='callback' data-expired-callback='expiredCallback' data-error-callback='errorCallback' data-theme='light'></div><script src='https://www.google.com/recaptcha/api.js'></script>", captcha1.ToHtmlString());
 
             IHtmlString captcha2 = ReCaptcha.GetCaptcha(callback: "callback", errorCallback: "errorCallback");
-            Assert.AreEqual("<div class='g-recaptcha' data-sitekey='my-public-key' data-callback='callback' data-error-callback='errorCallback'></div><script src='https://www.google.com/recaptcha/api.js'></script>", captcha2.ToHtmlString());
+            Assert.AreEqual("<div class='g-recaptcha' data-sitekey='my-public-key' data-callback='callback' data-error-callback='errorCallback' data-theme='light'></div><script src='https://www.google.com/recaptcha/api.js'></script>", captcha2.ToHtmlString());
 
             IHtmlString captcha3 = ReCaptcha.GetCaptcha(callback: "callback", expiredCallback: "expiredCallback");
-            Assert.AreEqual("<div class='g-recaptcha' data-sitekey='my-public-key' data-callback='callback' data-expired-callback='expiredCallback'></div><script src='https://www.google.com/recaptcha/api.js'></script>", captcha3.ToHtmlString());
+            Assert.AreEqual("<div class='g-recaptcha' data-sitekey='my-public-key' data-callback='callback' data-expired-callback='expiredCallback' data-theme='light'></div><script src='https://www.google.com/recaptcha/api.js'></script>", captcha3.ToHtmlString());
 
             IHtmlString captcha4 = ReCaptcha.GetCaptcha(callback: "callback");
-            Assert.AreEqual("<div class='g-recaptcha' data-sitekey='my-public-key' data-callback='callback'></div><script src='https://www.google.com/recaptcha/api.js'></script>", captcha4.ToHtmlString());
+            Assert.AreEqual("<div class='g-recaptcha' data-sitekey='my-public-key' data-callback='callback' data-theme='light'></div><script src='https://www.google.com/recaptcha/api.js'></script>", captcha4.ToHtmlString());
 
             IHtmlString captcha5 = ReCaptcha.GetCaptcha(expiredCallback: "expiredCallback", errorCallback: "errorCallback");
-            Assert.AreEqual("<div class='g-recaptcha' data-sitekey='my-public-key' data-expired-callback='expiredCallback' data-error-callback='errorCallback'></div><script src='https://www.google.com/recaptcha/api.js'></script>", captcha5.ToHtmlString());
+            Assert.AreEqual("<div class='g-recaptcha' data-sitekey='my-public-key' data-expired-callback='expiredCallback' data-error-callback='errorCallback' data-theme='light'></div><script src='https://www.google.com/recaptcha/api.js'></script>", captcha5.ToHtmlString());
 
             IHtmlString captcha6 = ReCaptcha.GetCaptcha(expiredCallback: "expiredCallback");
-            Assert.AreEqual("<div class='g-recaptcha' data-sitekey='my-public-key' data-expired-callback='expiredCallback'></div><script src='https://www.google.com/recaptcha/api.js'></script>", captcha6.ToHtmlString());
+            Assert.AreEqual("<div class='g-recaptcha' data-sitekey='my-public-key' data-expired-callback='expiredCallback' data-theme='light'></div><script src='https://www.google.com/recaptcha/api.js'></script>", captcha6.ToHtmlString());
 
             IHtmlString captcha7 = ReCaptcha.GetCaptcha(errorCallback: "errorCallback");
-            Assert.AreEqual("<div class='g-recaptcha' data-sitekey='my-public-key' data-error-callback='errorCallback'></div><script src='https://www.google.com/recaptcha/api.js'></script>", captcha7.ToHtmlString());
+            Assert.AreEqual("<div class='g-recaptcha' data-sitekey='my-public-key' data-error-callback='errorCallback' data-theme='light'></div><script src='https://www.google.com/recaptcha/api.js'></script>", captcha7.ToHtmlString());
         }
+
+        [Test]
+        public void AssertScriptDivIsCorrectWithDarkThemeConfiguration()
+        {
+            ReCaptcha.Configure("my-public-key", "my-secret-key", ReCaptchaLanguage.PortugueseBrazil, ReCaptchaTheme.dark);
+            IHtmlString captcha = ReCaptcha.GetCaptcha();
+            string captchaString = captcha.ToHtmlString();
+            Assert.AreEqual("<div class='g-recaptcha' data-sitekey='my-public-key' data-theme='dark'></div><script src='https://www.google.com/recaptcha/api.js?hl=pt-BR'></script>", captchaString);
+        }
+
+        [Test]
+        public void AssertScriptDivIsCorrectWithDarkThemeOverrride()
+        {
+            ReCaptcha.Configure("my-public-key", "my-secret-key", ReCaptchaLanguage.PortugueseBrazil, ReCaptchaTheme.light);
+            IHtmlString captcha = ReCaptcha.GetCaptcha(theme: ReCaptchaTheme.dark);
+            string captchaString = captcha.ToHtmlString();
+            Assert.AreEqual("<div class='g-recaptcha' data-sitekey='my-public-key' data-theme='dark'></div><script src='https://www.google.com/recaptcha/api.js?hl=pt-BR'></script>", captchaString);
+        }
+
 
         [Test]
         public void AssertScriptDivIsCorrectWithCallbacksAndLanguage()
         {
             ReCaptcha.Configure("my-public-key", "my-secret-key");
             IHtmlString captcha = ReCaptcha.GetCaptcha(ReCaptchaLanguage.Spanish, "callback", "expiredCallback", "errorCallback");
-            Assert.AreEqual("<div class='g-recaptcha' data-sitekey='my-public-key' data-callback='callback' data-expired-callback='expiredCallback' data-error-callback='errorCallback'></div><script src='https://www.google.com/recaptcha/api.js?hl=es'></script>", captcha.ToHtmlString());
+            Assert.AreEqual("<div class='g-recaptcha' data-sitekey='my-public-key' data-callback='callback' data-expired-callback='expiredCallback' data-error-callback='errorCallback' data-theme='light'></div><script src='https://www.google.com/recaptcha/api.js?hl=es'></script>", captcha.ToHtmlString());
         }
 
         [Test]

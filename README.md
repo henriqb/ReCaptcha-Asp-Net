@@ -23,7 +23,6 @@ Or you can use value "Auto" and it will get the Language from System.Thread.Curr
 ```xml
 <add key="recaptcha-language-key" value="[language-code]" />
 ```
-
 Or via C# code:
 It's only needed to call it once, a good place to put this is at Application_Start() function 
 ```C#
@@ -38,6 +37,18 @@ ReCaptcha.Configure(publicKey, secretKey, defaultLanguage);
 //Auto-select language from System.Thread.CurrentCulture
 ReCaptchaLanguage defaultLanguage = ReCaptchaLanguage.Auto;
 ReCaptcha.Configure(publicKey, secretKey, defaultLanguage);
+```
+
+Optional if you want to alter the default theme from light to dark mode.
+```xml
+<add key="recaptcha-language-theme" value="dark" />
+```
+
+Or via C# code:
+```C#
+//Optional select a default dark theme
+ReCaptchaLanguage defaultLanguage = ReCaptchaLanguage.Auto;
+ReCaptcha.Configure(publicKey, secretKey, defaultLanguage, ReCaptchaTheme.dark);
 ```
 
 ## How to use
@@ -57,6 +68,15 @@ Optional if you want to override your configured default language:
 <form action="myAction">
   <input type="text" name="myinput1" />
   @ReCaptcha.GetCaptcha(ReCaptchaLanguage.PortugueseBrazil) <!-- Will show your ReCaptcha as Portuguese, 
+  overriding any previous configuration -->
+</form>
+```
+
+Optional if you want to override your configured theme (light/dark): 
+```html
+<form action="myAction">
+  <input type="text" name="myinput1" />
+  @ReCaptcha.GetCaptcha(theme: ReCaptchaTheme.dark) <!-- Will show your ReCaptcha on dark theme, 
   overriding any previous configuration -->
 </form>
 ```

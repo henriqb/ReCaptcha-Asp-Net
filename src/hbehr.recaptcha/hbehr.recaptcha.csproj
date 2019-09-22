@@ -53,6 +53,7 @@
     <Compile Include="Internazionalization\LanguageAttribute.cs" />
     <Compile Include="Internazionalization\LanguageAttributeHelper.cs" />
     <Compile Include="ReCaptchaError.cs" />
+    <Compile Include="ReCaptchaTheme.cs" />
     <Compile Include="ReCaptchaLanguage.cs" />
     <Compile Include="WebCommunication\GoogleBaseWebPost.cs" />
     <Compile Include="WebCommunication\GoogleWebPost.cs" />

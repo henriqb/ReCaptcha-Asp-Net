@@ -21,7 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
@@ -34,9 +33,9 @@ namespace hbehr.recaptcha
     {
         private static ReCaptchaObject _reCaptcha = new ReCaptchaObject();
 
-        public static void Configure(string publicKey, string secretKey, ReCaptchaLanguage? defaultLanguage = null)
+        public static void Configure(string publicKey, string secretKey, ReCaptchaLanguage? defaultLanguage = null, ReCaptchaTheme theme = ReCaptchaTheme.light)
         {
-            _reCaptcha = new ReCaptchaObject(publicKey, secretKey, defaultLanguage);
+            _reCaptcha = new ReCaptchaObject(publicKey, secretKey, defaultLanguage, theme);
         }
 
         public static void ResetConfiguration()
@@ -44,9 +43,9 @@ namespace hbehr.recaptcha
             _reCaptcha = new ReCaptchaObject();
         }
 
-        public static IHtmlString GetCaptcha(ReCaptchaLanguage? language = null, string callback = null, string expiredCallback = null, string errorCallback = null)
+        public static IHtmlString GetCaptcha(ReCaptchaLanguage? language = null, string callback = null, string expiredCallback = null, string errorCallback = null, ReCaptchaTheme? theme = null)
         {
-            return _reCaptcha.GetCaptcha(language, callback, expiredCallback, errorCallback);
+            return _reCaptcha.GetCaptcha(language, callback, expiredCallback, errorCallback, theme);
         }
 
         public static IHtmlString GetInvisibleCaptcha(string callback, string buttonText, ReCaptchaLanguage? language = null, IEnumerable<string> additionalClasses = null)

@@ -38,6 +38,7 @@ namespace hbehr.recaptcha
     {
         private string _captchaDiv, _invisibleCaptchaDiv, _secretKey, _language;
         private ReCaptchaLanguage? _defaultLanguage;
+        private ReCaptchaTheme _defaultTheme;
         private bool _configured;
         
         internal ReCaptchaObject()
@@ -67,14 +68,28 @@ namespace hbehr.recaptcha
             {
                 // No language on .config
             }
+
+            _defaultTheme = ReCaptchaTheme.light;
+            try
+            {
+                var theme = reader.GetValue("recaptcha-language-theme", typeof(string)).ToString();
+                if ("dark".Equals(theme))
+                {
+                    _defaultTheme = ReCaptchaTheme.dark;
+                }
+            }
+            catch
+            {
+                // No language on .config
+            }
         }
 
-        internal ReCaptchaObject(string publicKey, string secretKey, ReCaptchaLanguage? defaultLanguage = null)
+        internal ReCaptchaObject(string publicKey, string secretKey, ReCaptchaLanguage? defaultLanguage = null, ReCaptchaTheme theme = ReCaptchaTheme.light)
         {
-            Initialize(publicKey, secretKey, defaultLanguage);
+            Initialize(publicKey, secretKey, defaultLanguage, theme);
         }
 
-        private void Initialize(string publicKey, string secretKey, ReCaptchaLanguage? defaultLanguage = null)
+        private void Initialize(string publicKey, string secretKey, ReCaptchaLanguage? defaultLanguage = null, ReCaptchaTheme theme = ReCaptchaTheme.light)
         {
             if (string.IsNullOrWhiteSpace(publicKey))
             {
@@ -89,9 +104,10 @@ namespace hbehr.recaptcha
             {
                 _language = defaultLanguage.Value.GetLanguage();
             }
+            _defaultTheme = theme;
             _configured = true;
             _secretKey = secretKey;
-            _captchaDiv = string.Format("<div class='g-recaptcha' data-sitekey='{0}'{{1}}></div><script src='https://www.google.com/recaptcha/api.js{{0}}'></script>", publicKey);
+            _captchaDiv = string.Format("<div class='g-recaptcha' data-sitekey='{0}'{{1}} data-theme='{{2}}'></div><script src='https://www.google.com/recaptcha/api.js{{0}}'></script>", publicKey);
             _invisibleCaptchaDiv = string.Format("<button class='{{1}}' data-sitekey='{0}' data-callback='{{2}}'>{{3}}</button><script src='https://www.google.com/recaptcha/api.js{{0}}'></script>", publicKey);
         }
 
@@ -108,10 +124,10 @@ namespace hbehr.recaptcha
             throw new ReCaptchaException("ReCaptcha is not configured. Get your site and secret keys from google. And call function ReCaptcha.Configure(publicKey, secretKey), or add the keys to the .config file <add key='recaptcha-public-key' value='...' /><add key='recaptcha-site-key' value='...'/>");
         }
 
-        internal IHtmlString GetCaptcha(ReCaptchaLanguage? language, string callback, string expiredCallback, string errorCallback)
+        internal IHtmlString GetCaptcha(ReCaptchaLanguage? language, string callback, string expiredCallback, string errorCallback, ReCaptchaTheme? theme)
         {
             CheckIfIamConfigured();
-            return new HtmlString(string.Format(_captchaDiv, GetHlCode(language), GetCaptchaDataCallbacks(callback, expiredCallback, errorCallback)));
+            return new HtmlString(string.Format(_captchaDiv, GetHlCode(language), GetCaptchaDataCallbacks(callback, expiredCallback, errorCallback), theme ?? _defaultTheme));
         }
 
         internal IHtmlString GetInvisibleCaptcha(string callback, string buttonText, ReCaptchaLanguage? language, IEnumerable<string> additionalClasses)
@@ -120,7 +136,7 @@ namespace hbehr.recaptcha
             var classes = new List<string> {"g-recaptcha"};
             if (additionalClasses != null)
             {
-              classes.AddRange(additionalClasses);
+                classes.AddRange(additionalClasses);
             }
             return new HtmlString(string.Format(_invisibleCaptchaDiv, GetHlCode(language), string.Join(" ", classes), callback, buttonText));
         }
