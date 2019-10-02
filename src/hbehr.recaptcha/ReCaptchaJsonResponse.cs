@@ -21,15 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-using Newtonsoft.Json;
+
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Json;
 
 namespace hbehr.recaptcha
 {
+    [DataContract]
     internal class ReCaptchaJsonResponse
     {
-        [JsonProperty("success")]
+        [DataMember(Name = "success")]
         internal bool Success { get; set; }
-        [JsonProperty("error-codes")]
+        [DataMember(Name = "error-codes")]
         internal string[] ErrorCodes { get; set; }
+
+        internal static ReCaptchaJsonResponse DeserializeResponse(string response)
+        {
+            var serializer = new DataContractJsonSerializer(typeof(ReCaptchaJsonResponse));
+            var stream = new MemoryStream();
+            var writer = new StreamWriter(stream);
+            writer.Write(response);
+            writer.Flush();
+            stream.Position = 0;
+
+            return (ReCaptchaJsonResponse)serializer.ReadObject(stream);
+        }
     }
 }
