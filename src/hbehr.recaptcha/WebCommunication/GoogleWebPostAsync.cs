@@ -22,7 +22,6 @@
  * SOFTWARE.
  */
 using hbehr.recaptcha.WebInterface;
-using Newtonsoft.Json;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
@@ -60,7 +59,7 @@ namespace hbehr.recaptcha.WebCommunication
         private async Task<ReCaptchaJsonResponse> GetAnswerAsync(WebRequest webRequest)
         {
             var webResponse = webRequest.GetResponseAsync();
-            return JsonConvert.DeserializeObject<ReCaptchaJsonResponse>(await ReadAnswerFromWebResponseAsync(webResponse));
+            return ReCaptchaJsonResponse.DeserializeResponse(await ReadAnswerFromWebResponseAsync(webResponse));
         }
 
         private async Task<string> ReadAnswerFromWebResponseAsync(Task<WebResponse> webResponse)

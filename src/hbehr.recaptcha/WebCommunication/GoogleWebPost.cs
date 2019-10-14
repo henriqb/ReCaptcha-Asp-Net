@@ -21,10 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
+using System.CodeDom;
 using hbehr.recaptcha.WebInterface;
-using Newtonsoft.Json;
 using System.IO;
 using System.Net;
+using System.Runtime.Serialization.Json;
 using System.Web;
 
 namespace hbehr.recaptcha.WebCommunication
@@ -58,7 +60,7 @@ namespace hbehr.recaptcha.WebCommunication
         private ReCaptchaJsonResponse GetAnswer(WebRequest webRequest)
         {
             var webResponse = webRequest.GetResponse();
-            return JsonConvert.DeserializeObject<ReCaptchaJsonResponse>(ReadAnswerFromWebResponse(webResponse));
+            return ReCaptchaJsonResponse.DeserializeResponse(ReadAnswerFromWebResponse(webResponse));
         }
 
         private string ReadAnswerFromWebResponse(WebResponse webResponse)
